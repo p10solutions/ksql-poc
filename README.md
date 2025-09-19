@@ -97,8 +97,8 @@ curl --location 'https://localhost:8088/ksql' \
 ```bash
 curl --location 'https://localhost:8088/ksql' \
 --data '{
-    "ksql": "CREATE STREAM pedidos_stream (id VARCHAR KEY, produto VARCHAR, valor DECIMAL(10, 2)) WITH (KAFKA_TOPIC = ''pedidos'', VALUE_FORMAT = ''JSON'');",
-       "streamsProperties": {};"
+    "ksql": "CREATE STREAM pedidos_stream (id VARCHAR KEY, produto VARCHAR, valor DECIMAL(10, 2)) WITH (KAFKA_TOPIC = 'pedidos', VALUE_FORMAT = 'JSON');",
+       "streamsProperties": {}
 }'
 ```
 
@@ -106,8 +106,8 @@ curl --location 'https://localhost:8088/ksql' \
 ```bash
 curl --location 'https://localhost:8088/ksql' \
 --data '{
-    "ksql": "CREATE STREAM pedidos_caros_v2 WITH (KAFKA_TOPIC = ''processado-pedidos-caros-v1'', VALUE_FORMAT = ''JSON'') AS SELECT * FROM pedidos_stream WHERE valor > 200.00;",
-       "streamsProperties": {};"
+    "ksql": "CREATE STREAM pedidos_caros_v2 WITH (KAFKA_TOPIC = 'processado-pedidos-caros-v1', VALUE_FORMAT = 'JSON') AS SELECT * FROM pedidos_stream WHERE valor > 200.00;",
+       "streamsProperties": {}
 }'
 ```
 
