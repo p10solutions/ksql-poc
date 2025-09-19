@@ -58,3 +58,71 @@ Exemplo de mensagens para produzir:
 ```bash
 docker-compose exec broker kafka-console-consumer --topic processado-pedidos-caros-v1 --bootstrap-server broker:29092 --from-beginning --property print.key=true --property value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
 ```
+
+### 5. Interagir com o KSQL Server por chamadas http
+
+## Lista Streams
+```bash
+curl --location 'https://localhost:8088/ksql' \
+--data '{
+    "ksql": "LIST STREAMS;"
+}'
+```
+
+## Lista Tabelas
+```bash
+curl --location 'https://localhost:8088/ksql' \
+--data '{
+    "ksql": "LIST TABLES;"
+}'
+```
+
+## Lista Queries
+```bash
+curl --location 'https://localhost:8088/ksql' \
+--data '{
+    "ksql": "LIST QUERIES;"
+}'
+```
+
+## Descreve um stream
+```bash
+curl --location 'https://localhost:8088/ksql' \
+--data '{
+    "ksql": "DESCRIBE pedidos_stream;"
+}'
+```
+
+## Cria um stream
+```bash
+curl --location 'https://localhost:8088/ksql' \
+--data '{
+    "ksql": "CREATE STREAM pedidos_stream (id VARCHAR KEY, produto VARCHAR, valor DECIMAL(10, 2)) WITH (KAFKA_TOPIC = ''pedidos'', VALUE_FORMAT = ''JSON'');",
+       "streamsProperties": {};"
+}'
+```
+
+## Cria uma Query persistente sob o stream
+```bash
+curl --location 'https://localhost:8088/ksql' \
+--data '{
+    "ksql": "CREATE STREAM pedidos_caros_v2 WITH (KAFKA_TOPIC = ''processado-pedidos-caros-v1'', VALUE_FORMAT = ''JSON'') AS SELECT * FROM pedidos_stream WHERE valor > 200.00;",
+       "streamsProperties": {};"
+}'
+```
+
+## Cria uma Query com resultados atualizados ao vivo enquanto estiver conectado
+```bash
+curl --location 'https://localhost:8088/query-stream' \
+--data '{
+    "ksql": "SELECT * FROM pedidos_stream WHERE valor > 200.00;"
+}'
+```
+
+## Cria uma Query de resultado unico
+```bash
+curl --location 'https://localhost:8088/query' \
+--data '{
+    "ksql": "SELECT * FROM pedidos_stream WHERE valor > 200.00;"
+}'
+```
